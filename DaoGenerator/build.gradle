@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'application'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+
+mainClassName = "lin.com.daogenerator.TestDaoGenerator"
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'org.greenrobot:greendao-generator:3.2.2'
+}
+
+//sourceCompatibility = "1.8"
+//targetCompatibility = "1.8"

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#1984D1</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!--广告页 跳转按钮颜色-->
+    <color name="tv_jump_home_color">#EDEDED</color>
+    <color name="color1984D1">#1984D1</color>
+    <color name="colorffffff">#FFFFFF</color>
+    <color name="item_bg">#FFFFFF</color>
+    <color name="scan_corner_color">#0effc2</color>
+    <color name="spinner_bg">#1984D1</color>
+    <color name="white_text_color">#F0F0F0</color>
+    <color name="gray_color">#1984D1</color>
+
+</resources>

@@ -1,0 +1,71 @@
+ext {
+
+    android = [
+            compileSdkVersion: 25,
+            buildToolsVersion: "26.0.0",
+            minSdkVersion    : 15,
+            targetSdkVersion : 23,
+            versionCode      : 1,
+            versionName      : "1.0",
+            // dex突破65535的限制
+            multiDexEnabled  : true
+    ]
+
+    dependVersion = [
+            support: "25.3.1"
+    ]
+
+    dependencies = [
+            // ------------- Android -------------
+            supportV4                    : "com.android.support:support-v4:${dependVersion.support}",
+            appcompatV7                  : "com.android.support:appcompat-v7:${dependVersion.support}",
+            design                       : "com.android.support:design:${dependVersion.support}",
+            vectorDrawable               : "com.android.support:support-vector-drawable:${dependVersion.support}",
+            recyclerview                 : "com.android.support:recyclerview-v7:${dependVersion.support}",
+            constraintLayout             : 'com.android.support.constraint:constraint-layout:1.0.2',
+
+            //卡片view                                   使用说明 http://www.jianshu.com/p/33b1d21d6ba6
+            cardview                     : "com.android.support:cardview-v7:${dependVersion.support}",
+            junit                        : 'junit:junit:4.12',
+            //RecyclerAdapter框架
+            //BaseRecyclerViewAdapterHelper             使用说明 http://www.jianshu.com/p/b343fcff51b0
+            BaseRecyclerViewAdapterHelper: 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.18',
+            //------------- 二维码 -------------
+            zxingLibrary                 : 'cn.yipianfengye.android:zxing-library:2.1',
+            //------------- 动态权限库 -------------
+            easypermissions              : 'pub.devrel:easypermissions:0.4.0',
+            //------------- 测试 -------------
+            espresso                     : 'com.android.support.test.espresso:espresso-core:2.2.2',
+
+            // ------------- 网络请求 -------------
+            okhttp                       : 'com.squareup.okhttp3:okhttp:3.3.1',
+            retrofit                     : 'com.squareup.retrofit2:retrofit:2.1.0',
+
+            // ------------- 图片加载 -------------
+            fresco                       : 'com.facebook.fresco:fresco:0.11.0',
+            animatedGif                  : 'com.facebook.fresco:animated-gif:0.12.0',
+            picasso                      : 'com.squareup.picasso:picasso:2.5.2',
+            photoView                    : 'com.github.chrisbanes:PhotoView:1.3.1',
+
+            // ------------- RxAndroid -------------
+            rxandroid                    : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+            rxjava                       : 'io.reactivex.rxjava2:rxjava:2.1.0',
+            // ------------- json解析 -------------
+            fastJson                     : 'com.alibaba:fastjson:1.1.54.android',
+            gson                         : 'com.google.code.gson:gson:2.8.0',
+
+            // ------------- log打印工具 -------------
+            logger                       : 'com.orhanobut:logger:2.1.1',
+            greendao                     : 'org.greenrobot:greendao:3.2.0',
+
+            // ------------- ButterKnife -------------
+            butterknife                  : 'com.jakewharton:butterknife:8.6.0',
+
+            butterknifeCompiler          : 'com.jakewharton:butterknife-compiler:8.6.0',
+            // ------------- dagger2 -------------  https://github.com/google/dagger
+            dagger                       : 'com.google.dagger:dagger:2.11',
+            // ------------- LeakCanary -------------
+            leakcanaryAndroid            : 'com.squareup.leakcanary:leakcanary-android:1.5',
+            leakcanaryAndroidNoOp        : 'com.squareup.leakcanary:leakcanary-android-no-op:1.5',
+    ]
+}

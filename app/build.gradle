@@ -1,0 +1,340 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.antfortune.freeline'
+apply plugin: 'org.greenrobot.greendao' // apply plugin
+
+//定义当前时间
+//def releaseTime() {
+//    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+//}
+//
+//def gitVersionCode() {
+//    def cmd = 'git rev-list HEAD --first-parent --count'
+//    cmd.execute().text.trim().toInteger()
+//}
+
+//def gitVersionTag() {
+//    def cmd = 'git describe --tags'
+//    def version = cmd.execute().text.trim()
+//
+//    def pattern = "-(\\d+)-g"
+//    def matcher = version =~ pattern
+//
+//    if (matcher) {
+//        version = version.substring(0, matcher.start()) + "." + matcher[0][1]
+//    } else {
+//        version = version + ".0"
+//    }
+//
+//    return version
+//}
+
+
+android {
+
+    //签名配置
+    signingConfigs {
+        debug {
+        }
+        release {
+            try {
+                //            storeFile file('D:/code/android/work/LinBang/app/linbang.jks')
+                storeFile file('linbang.jks')
+                storePassword KEYSTORE_PASSWORD
+                keyAlias 'linbang'
+                keyPassword KEY_PASSWORD
+            } catch (ex) {
+                throw new InvalidUserDataException("You should define KEYSTORE_PASSWORD and KEY_PASSWORD in gradle.properties.")
+            }
+        }
+    }
+    // 编译SDK的版本
+    compileSdkVersion 25
+    // build tools的版本
+    buildToolsVersion '26.0.0'
+    defaultConfig {
+        applicationId "lin.com.androidlingbang"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        //  参考 http://blog.csdn.net/aengui/article/details/51016350
+        //  用来关闭Android Studio的PNG合法性检查的，直接不让它检查。
+        aaptOptions.cruncherEnabled = false
+        aaptOptions.useNewCruncher = false
+
+//        设置支持的语言
+//        利用这个配置可以去掉三方库中无用的语言
+        resConfigs "zh"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+        //android studio 3.0默认支持jdk 1.8 建议弃用jack
+        //android studio 3.0以下取消注释
+//        jackOptions {
+//            enabled true
+//        }
+//        重命名生成的apk文件
+//        android.libraryVariants.all { variant ->
+//            variant.outputs.each { output ->
+//                if (output.outputFile != null && output.outputFile.name.endsWith('.aar')) {
+//                    def name = "${rootDir}/demo/libs/library.aar"
+//                    println name
+//                    output.outputFile = file(name)
+//                }
+//            }
+//        }
+//
+//
+//        //删除无用的apk中间产物
+//        android.libraryVariants.all { variant ->
+//            variant.outputs.each { output ->
+//                if (output.zipAlign != null) {
+//                    output.zipAlign.doLast {
+//                        output.zipAlign.inputFile.delete()
+//                    }
+//                }
+//            }
+//        }
+    }
+    //每个 BuildType 应用到不同的源文件
+    sourceSets {
+        main {
+            java.srcDirs = [
+                    'src/main/java',
+                    'src/main/java-gen'
+            ]
+        }
+    }
+
+//    sourceSets {
+//        main {
+//            res.srcDirs=[
+//                    'src/main/res/layout/fragment',
+//                    'src/main/res/layout/transition',
+//                    'src/main/res/layout/main',
+//                    'src/main/res/layout',
+//                    'src/main/res'
+//            ]
+//        }
+////        debug.setRoot('src/build-types/debug')
+////        sim.setRoot('src/build-types/sim')
+////        release.setRoot('src/build-types/release')
+//    }
+//    sourceSets {
+//        main {
+//            java {
+//                // 存放kotlin文件,
+//                srcDir 'src/main/kotlin'
+//            }
+//        }
+//    }
+//build类型
+    buildTypes {
+        //发布环境
+        release {
+            signingConfig signingConfigs.release
+//            buildConfigField 'String', 'BASE_URL', '"http://api.devtest.xxxx.net/"' //开发URL
+//            shrinkResources true //是否移除无用的resource文件
+//            minifyEnabled true //是否进行混淆
+//            zipAlignEnabled true //Zipalign优化
+
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "boolean", "IS_DEBUG", "false"
+        }
+        //开发环境
+        debug {
+            // 为了不和 release 版本冲突
+//            applicationIdSuffix "-debug"
+//            versionNameSuffix "-debug"
+//            zipAlignEnabled true //Zipalign优化
+//            shrinkResources true //是否移除无用的resource文件
+            debuggable true
+
+            signingConfig signingConfigs.debug
+            // 为了不和 release 版本冲突 应用id后缀
+//            minifyEnabled true
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            /**
+             * buildConfigField用法
+             *      buildConfigField("boolean", "LOG_DEBUG", "true")
+             *      buildConfigField "String", "SERVER_HOST", "\"200.200.200.50/\""
+             *          第一个：确定值的类型，第二个：指定key的名字，第三个：传值
+             *          上面的意思是：为LOG_DEBUG = true
+             *  使用方法
+             *      if(BuildConfig.LOG_DEBUG){*           //Debug，打印日志
+             *           Logger.init("AppPlusLog").setLogLevel(LogLevel.FULL);
+             *}else{*           //release,关闭日志
+             *           Logger.init("AppPlusLog").setLogLevel(LogLevel.None);
+             *}*  同样的，网络切换也可以这样设置
+             *  //取值
+             *      String host = BuildConfig.SERVER_HOST;
+             *  //然后再把这个host替换掉默认的那个
+             *
+             */
+            //域名
+//            buildConfigField 'String', 'BASE_URL', '"http://api.devtest.xxxx.net/"' //开发URL
+            //日志开关      开发模式下为true
+            buildConfigField "boolean", "IS_DEBUG", "true"
+            //预留
+//            buildConfigField 'int', 'SDKAPPID', 'xxxxxxxxxxx'
+//            buildConfigField 'String', 'ACCOUNTTYPE', '"xxxxxxxxxxx"'
+//            buildConfigField 'int', 'CLASSID', 'xxxxxxxxxxx'
+//            buildConfigField 'String', 'UPAIYUN_PATH', '"/user/avatar/dev/"'
+//            buildConfigField 'String', 'PINGTAI', '"kaifa"'
+
+
+        }
+    }
+//    //结合 git 和 gradle 实现自动版本号
+//    applicationVariants.all { variant ->
+//        variant.mergedFlavor.versionCode = gitVersion()
+//        variant.mergedFlavor.versionName = gitVersionTag()
+//    }
+
+//applicationVariants.all { variant ->
+//    if (variant.buildType.name.equals('release')) {
+//        variant.mergedFlavor.versionCode = gitVersionCode()
+//        variant.mergedFlavor.versionName = gitVersionTag()
+//    }
+//}
+// JDK版本
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+//    //多渠道打包
+//    productFlavors {
+//        xiaomi {}
+//        qihu360 {}
+//        wandoujia {}
+//        bidu {}
+//        yingyongbao {}
+//        uc {}
+//
+//    }
+//
+//    productFlavors.all { flavor ->
+//        flavor.manifestPlaceholders = [UMENG_CHANNEL_VALUE: name]
+//    }
+//     dataBinding 加入
+//    dataBinding {
+//        enabled = true
+//    }
+    packagingOptions {
+        exclude 'META-INF/rxjava.properties'
+    }
+
+}
+
+dependencies {
+
+    //-----------android----------
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile rootProject.ext.dependencies.appcompatV7
+
+    //    compile rootProject.ext.dependencies.supportV4
+    compile rootProject.ext.dependencies.design
+
+    //设计
+    compile rootProject.ext.dependencies.vectorDrawable
+
+    //
+    compile rootProject.ext.dependencies.recyclerview
+
+    //卡片view http://www.jianshu.com/p/33b1d21d6ba6
+    compile rootProject.ext.dependencies.cardview
+
+    //使用说明 http://www.jianshu.com/p/b343fcff51b0
+    compile rootProject.ext.dependencies.BaseRecyclerViewAdapterHelper
+
+    //-----------测试----------
+    testCompile rootProject.ext.dependencies.junit
+
+    //-----------log打印工具----------
+    compile rootProject.ext.dependencies.logger
+
+    //-----------二维码----------
+    compile rootProject.ext.dependencies.zxingLibrary
+
+    //-----------动态权限----------
+    compile rootProject.ext.dependencies.easypermissions
+
+    // ------------- dagger2 -------------  https://github.com/google/dagger
+    compile rootProject.ext.dependencies.dagger
+
+    // ------------- ButterKnife -------------
+    compile rootProject.ext.dependencies.butterknife
+
+    //
+    annotationProcessor rootProject.ext.dependencies.butterknifeCompiler
+
+    // ------------- json解析 gson -------------
+    compile 'com.google.code.gson:gson:2.8.0'
+
+    // ------------- RxAndroid -------------        https://github.com/ReactiveX/RxAndroid
+    compile rootProject.ext.dependencies.rxjava
+
+    //
+    compile rootProject.ext.dependencies.rxandroid
+
+    //
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //网络请求
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    //okhttp 日志拦截器
+    //    Retrofit 2 之 log得请求与响应      http://xiaofeng.site/2016/12/08/Retrofit-2-%E4%B9%8B-log%E5%BE%97%E8%AF%B7%E6%B1%82%E4%B8%8E%E5%93%8D%E5%BA%94/undefined/
+    compile 'com.squareup.okhttp3:logging-interceptor:3.7.0'
+
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
+    //    compile 'com.android.support:recyclerview-v7:'
+
+    //    compile 'com.android.support:recyclerview-v7:25.3.1'
+
+    //    compile 'com.alibaba:fastjson:1.2.9'
+    compile 'com.alibaba:arouter-api:1.2.1.1'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.2.1'
+
+    //android 常用工具
+    compile 'com.blankj:utilcode:1.7.1'
+
+    //orm greendao
+    compile 'org.greenrobot:greendao:3.2.2'
+    compile 'org.greenrobot:greendao-generator:3.2.2'
+
+
+    //sql查看
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
+
+    //自动生成get set tostring 构造函数    https://github.com/mplushnikov/lombok-intellij-plugin
+//    compile "org.projectlombok:lombok:1.16.16"
+}
+repositories {
+    mavenCentral()
+}
+
+greendao {
+    /**
+     * greendao实体类包文件夹
+     */
+    targetGenDir 'src/main/java-gen'
+    /**
+     * 版本号
+     */
+    schemaVersion 11
+    /**
+     * greendao输出dao数据库实体类文件夹
+     */
+    daoPackage 'lin.com.androidlingbang.dao'
+
+}

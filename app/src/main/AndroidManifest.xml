@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="lin.com.androidlingbang">
+
+    <!-- 权限 -->
+    <!--
+            在Android6.0开始，App可以直接安装，App在运行时一个一个询问用户授予权限，
+            系统会弹出一个对话框让用户选择是否授权某个权限给App（这个Dialog不能由开发者定制），
+            当App需要用户授予不恰当的权限的时候，用户可以拒绝，用户也可以在设置页面对每个App的权限进行管理。
+    -->
+    <!--
+       新的权限策略讲权限分为两类，
+           第一类是不涉及用户隐私的，只需要在Manifest中声明即可，比如网络、蓝牙、NFC等；
+           第二类是涉及到用户隐私信息的，需要用户授权后才可使用，比如SD卡读写、联系人、短信读写等。
+    -->
+    <!-- 不需要运行时申请的权限 -->
+    <!--
+            此类权限都是正常保护的权限，
+            只需要在AndroidManifest.xml中简单声明这些权限即可，
+            安装即授权，不需要每次使用时都检查权限，
+            而且用户不能取消以上授权，除非用户卸载App。
+    -->
+    <uses-permission android:name="android.permission.VIBRATE" /> <!-- 震动 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 互联网 -->
+
+
+    <!-- 需要运行时申请的权限 -->
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 照相机 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 读取外部存储器 -->
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" /> <!-- 闪光灯 -->
+    <application
+        android:name=".GlobalApplication"
+        android:allowBackup="true"
+        android:debuggable="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:ignore="HardcodedDebugMode">
+        <activity android:name=".TransitionActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".MainActivity" /> <!-- 主要 -->
+        <activity android:name=".ui.activity.SearchActivity" /> <!-- 搜索 -->
+        <activity android:name=".ui.activity.ScanCodeActivity" /> <!-- 二维码 -->
+        <activity android:name=".ui.activity.ThreeActivity" /> <!-- 生成二维码 -->
+
+        <activity android:name=".ui.activity.AnimationUseActivity" />
+        <activity android:name=".ui.activity.MultipleItemUseActivity" />
+        <activity android:name=".ui.activity.MoreActivity" /> <!-- 更多 -->
+        <activity
+            android:name=".ui.activity.LoginActivity"
+            android:label="@string/title_activity_login" />
+    </application>
+
+</manifest>

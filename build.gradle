@@ -1,0 +1,64 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+apply from: 'config.gradle'     //引入config.gradle
+
+buildscript {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.0.0-alpha8'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        classpath 'com.antfortune.freeline:gradle:0.8.7'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.2'
+    }
+    //全局设定编码
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        jcenter()
+        google()
+        maven { url "https://jitpack.io" }  //BaseRecyclerViewAdapterHelper
+    }
+}
+//启动模拟服务器
+task startNpm(type: Exec, description: '启动模拟服务器') {
+    workingDir '/test'      //工作目录。默认为项目目录
+    commandLine 'cmd', "/c", "start.bat"
+}
+/**
+ * android 端口映射到pc
+ * 使用场景
+ *      模拟器
+ * 调用方式
+ *      添加到app编译流程
+ *      参考  http://pkaq.org/2013/10/18/2013-10-18-graldewithcmd/
+ */
+task AndroidMapPcTask(type: Exec, description: 'android 端口映射到pc ') {
+    commandLine 'cmd', "/c", "adb forward tcp:8080 tcp:8080"
+//    println execResult
+//    standardOutput = new ByteArrayOutputStream()
+//    //extension method stopTomcat.output() can be used to obtain the output:
+//    ext.output = {
+//        return standardOutput.toString()
+//    }
+}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+//显示仓库
+task showRepos << {
+    println "All repos:"
+    println repositories.collect { it.name }
+}
